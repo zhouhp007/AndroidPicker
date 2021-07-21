@@ -1,5 +1,23 @@
 # 更新日志
 
+## 3.0.8 - 2021.07.21
+
+- 联动/日期/时间选择器有滚轮在滑动中时不允许另外的滚轮滑动，参阅 [issues#251](https://github.com/gzu-liyujiang/AndroidPicker/issues/251);
+- 修复日期/时间选择器模式设置可能不生效问题;
+- 修复时间选择器12小时制时间显示不正确问题，参阅 [issues#252](https://github.com/gzu-liyujiang/AndroidPicker/issues/252);
+
+## 3.0.7 - 2021.07.15
+
+- 时间选择器设置显示秒无效问题，参阅 [issues#249](https://github.com/gzu-liyujiang/AndroidPicker/issues/249)；
+
+## 3.0.6 - 2021.07.08
+
+- 滚轮控件弯曲模式增加指示线间隔控制；
+
+## 3.0.5 - 2021.07.02
+
+- 日期/时间选择器确保设置的日期时间范围有效，参阅 [issues#244](https://github.com/gzu-liyujiang/AndroidPicker/issues/244)；
+
 ## 3.0.4 - 2021.06.30
 
 - 联动选择器增加初始数据加载进度控制，地址选择器数据加载过程避免卡顿感；

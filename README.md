@@ -30,14 +30,6 @@ allprojects {
 }
 ```
 
-所有选择器的基础窗体：
-
-```groovy
-dependencies {
-    implementation 'com.github.gzu-liyujiang.AndroidPicker:Common:<version>'
-}
-```
-
 滚轮选择器的滚轮控件：
 
 ```groovy
@@ -149,6 +141,7 @@ dependencies {
         picker.getWheelView().setCurvedMaxAngle(60);
         picker.show();
 ```
+
 ```groovy
         DatePicker picker = new DatePicker(this);
         picker.setOnDatePickedListener(this);
@@ -158,7 +151,8 @@ dependencies {
         DateWheelLayout wheelLayout = picker.getWheelLayout();
         wheelLayout.setDateMode(DateMode.YEAR_MONTH_DAY);
         wheelLayout.setDateLabel("年", "月", "日");
-        wheelLayout.setRange(DateEntity.today(), DateEntity.target(2020, 12, 31), DateEntity.today());
+        wheelLayout.setRange(DateEntity.today(), DateEntity.yearOnFuture(30), DateEntity.yearOnFuture(10));
+        //wheelLayout.setRange(DateEntity.target(1930, 1, 1), DateEntity.today(), DateEntity.target(1999, 1, 1));
         wheelLayout.setCurtainEnabled(true);
         wheelLayout.setCurtainColor(0xFFCC0000);
         wheelLayout.setIndicatorEnabled(true);
@@ -171,6 +165,7 @@ dependencies {
         wheelLayout.getDayWheelView().setBackgroundColor(0x90CCCCCC);
         picker.show();
 ```
+
 ```groovy
         AddressPicker picker = new AddressPicker(this);
         picker.setAddressMode(AddressMode.PROVINCE_CITY_COUNTY);
@@ -181,6 +176,22 @@ dependencies {
 
 ### 在 XML 中
 
+```xml
+            <com.github.gzuliyujiang.wheelview.widget.WheelView
+                android:id="@+id/wheel_view"
+                android:layout_width="117dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                app:wheel_atmosphericEnabled="true"
+                app:wheel_curvedEnabled="true"
+                app:wheel_curvedIndicatorSpace="4dp"
+                app:wheel_curvedMaxAngle="60"
+                app:wheel_indicatorColor="#FF0081FF"
+                app:wheel_itemSpace="50dp"
+                app:wheel_itemTextColor="#FF474747"
+                app:wheel_itemTextColorSelected="#FF0081FF"
+                app:wheel_itemTextSize="20sp" />
+```
 ```xml
         <LinearLayout
             android:layout_width="match_parent"
@@ -206,8 +217,6 @@ dependencies {
                 android:layout_width="90dp"
                 android:layout_height="150dp"
                 android:layout_gravity="center_horizontal"
-                app:wheel_curvedEnabled="true"
-                app:wheel_curvedMaxAngle="45"
                 app:wheel_label="个"
                 app:wheel_maxNumber="30"
                 app:wheel_minNumber="10"
@@ -218,8 +227,6 @@ dependencies {
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 app:wheel_dateMode="year_month_day"
-                app:wheel_indicatorColor="#FFEEEEEE"
-                app:wheel_indicatorSize="5dp"
                 app:wheel_timeMode="hour_12_no_second" />
 
             <com.github.gzuliyujiang.wheelpicker.widget.DateWheelLayout

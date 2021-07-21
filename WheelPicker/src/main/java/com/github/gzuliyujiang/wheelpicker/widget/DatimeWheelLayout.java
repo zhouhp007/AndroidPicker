@@ -50,7 +50,6 @@ public class DatimeWheelLayout extends BaseWheelLayout {
     private TimeWheelLayout timeWheelLayout;
     private DatimeEntity startValue;
     private DatimeEntity endValue;
-    private int timeMode = TimeMode.HOUR_24_HAS_SECOND;
     private OnDatimeSelectedListener onDatimeSelectedListener;
 
     public DatimeWheelLayout(Context context) {
@@ -92,7 +91,7 @@ public class DatimeWheelLayout extends BaseWheelLayout {
         dateWheelLayout = findViewById(R.id.wheel_picker_date_wheel);
         timeWheelLayout = findViewById(R.id.wheel_picker_time_wheel);
         setDateFormatter(new SimpleDateFormatter());
-        setTimeFormatter(new SimpleTimeFormatter());
+        setTimeFormatter(new SimpleTimeFormatter(timeWheelLayout));
         setRange(DatimeEntity.now(), DatimeEntity.yearOnFuture(30));
     }
 
@@ -112,6 +111,7 @@ public class DatimeWheelLayout extends BaseWheelLayout {
         setIndicatorEnabled(typedArray.getBoolean(R.styleable.DatimeWheelLayout_wheel_indicatorEnabled, false));
         setIndicatorColor(typedArray.getColor(R.styleable.DatimeWheelLayout_wheel_indicatorColor, 0xFFEE3333));
         setIndicatorSize(typedArray.getDimension(R.styleable.DatimeWheelLayout_wheel_indicatorSize, 1 * density));
+        setCurvedIndicatorSpace(typedArray.getDimensionPixelSize(R.styleable.DatimeWheelLayout_wheel_curvedIndicatorSpace, (int) (1 * density)));
         setCurtainEnabled(typedArray.getBoolean(R.styleable.DatimeWheelLayout_wheel_curtainEnabled, false));
         setCurtainColor(typedArray.getColor(R.styleable.DatimeWheelLayout_wheel_curtainColor, 0x88FFFFFF));
         setAtmosphericEnabled(typedArray.getBoolean(R.styleable.DatimeWheelLayout_wheel_atmosphericEnabled, false));
@@ -148,13 +148,12 @@ public class DatimeWheelLayout extends BaseWheelLayout {
         });
     }
 
-    public void setDateMode(int dateMode) {
+    public void setDateMode(@DateMode int dateMode) {
         dateWheelLayout.setDateMode(dateMode);
     }
 
-    public void setTimeMode(int timeMode) {
+    public void setTimeMode(@TimeMode int timeMode) {
         timeWheelLayout.setTimeMode(timeMode);
-        this.timeMode = timeMode;
     }
 
     /**
@@ -174,13 +173,7 @@ public class DatimeWheelLayout extends BaseWheelLayout {
         }
         dateWheelLayout.setRange(startValue.getDate(), endValue.getDate(), defaultValue.getDate());
         TimeEntity startTime = TimeEntity.target(0, 0, 0);
-        int timeHourMax;
-        if (timeMode == TimeMode.HOUR_12_NO_SECOND || timeMode == TimeMode.HOUR_12_HAS_SECOND) {
-            timeHourMax = 12;
-        } else {
-            timeHourMax = 23;
-        }
-        TimeEntity endTime = TimeEntity.target(timeHourMax, 59, 59);
+        TimeEntity endTime = TimeEntity.target(timeWheelLayout.isHour12Mode() ? 24 : 23, 59, 59);
         timeWheelLayout.setRange(startTime, endTime, defaultValue.getTime());
         this.startValue = startValue;
         this.endValue = endValue;
@@ -193,12 +186,7 @@ public class DatimeWheelLayout extends BaseWheelLayout {
         if (endValue == null) {
             endValue = DatimeEntity.yearOnFuture(30);
         }
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setRange(startValue, endValue, defaultValue);
-            }
-        }, 200);
+        setRange(startValue, endValue, defaultValue);
     }
 
     public void setDateFormatter(DateFormatter dateFormatter) {

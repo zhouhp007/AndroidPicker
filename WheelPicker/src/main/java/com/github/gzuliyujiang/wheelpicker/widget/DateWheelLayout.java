@@ -116,6 +116,7 @@ public class DateWheelLayout extends BaseWheelLayout {
         setIndicatorEnabled(typedArray.getBoolean(R.styleable.DateWheelLayout_wheel_indicatorEnabled, false));
         setIndicatorColor(typedArray.getColor(R.styleable.DateWheelLayout_wheel_indicatorColor, 0xFFEE3333));
         setIndicatorSize(typedArray.getDimension(R.styleable.DateWheelLayout_wheel_indicatorSize, 1 * density));
+        setCurvedIndicatorSpace(typedArray.getDimensionPixelSize(R.styleable.DateWheelLayout_wheel_curvedIndicatorSpace, (int) (1 * density)));
         setCurtainEnabled(typedArray.getBoolean(R.styleable.DateWheelLayout_wheel_curtainEnabled, false));
         setCurtainColor(typedArray.getColor(R.styleable.DateWheelLayout_wheel_curtainColor, 0x88FFFFFF));
         setAtmosphericEnabled(typedArray.getBoolean(R.styleable.DateWheelLayout_wheel_atmosphericEnabled, false));
@@ -153,6 +154,25 @@ public class DateWheelLayout extends BaseWheelLayout {
         }
     }
 
+    @Override
+    public void onWheelScrollStateChanged(WheelView view, int state) {
+        int id = view.getId();
+        if (id == R.id.wheel_picker_date_year_wheel) {
+            monthWheelView.setEnabled(state == WheelView.SCROLL_STATE_IDLE);
+            dayWheelView.setEnabled(state == WheelView.SCROLL_STATE_IDLE);
+            return;
+        }
+        if (id == R.id.wheel_picker_date_month_wheel) {
+            yearWheelView.setEnabled(state == WheelView.SCROLL_STATE_IDLE);
+            dayWheelView.setEnabled(state == WheelView.SCROLL_STATE_IDLE);
+            return;
+        }
+        if (id == R.id.wheel_picker_date_day_wheel) {
+            yearWheelView.setEnabled(state == WheelView.SCROLL_STATE_IDLE);
+            monthWheelView.setEnabled(state == WheelView.SCROLL_STATE_IDLE);
+        }
+    }
+
     private void dateSelectedCallback() {
         if (onDateSelectedListener == null) {
             return;
@@ -165,7 +185,13 @@ public class DateWheelLayout extends BaseWheelLayout {
         });
     }
 
-    public void setDateMode(int dateMode) {
+    public void setDateMode(@DateMode int dateMode) {
+        yearWheelView.setVisibility(View.VISIBLE);
+        yearLabelView.setVisibility(View.VISIBLE);
+        monthWheelView.setVisibility(View.VISIBLE);
+        monthLabelView.setVisibility(View.VISIBLE);
+        dayWheelView.setVisibility(View.VISIBLE);
+        dayLabelView.setVisibility(View.VISIBLE);
         if (dateMode == DateMode.NONE) {
             yearWheelView.setVisibility(View.GONE);
             yearLabelView.setVisibility(View.GONE);
@@ -198,9 +224,16 @@ public class DateWheelLayout extends BaseWheelLayout {
      */
     public void setRange(@NonNull DateEntity startValue, @NonNull DateEntity endValue,
                          @Nullable DateEntity defaultValue) {
+        if (endValue.toTimeInMillis() < startValue.toTimeInMillis()) {
+            throw new IllegalArgumentException("Ensure the start date is less than the end date");
+        }
         this.startValue = startValue;
         this.endValue = endValue;
         if (defaultValue != null) {
+            if (defaultValue.toTimeInMillis() < startValue.toTimeInMillis() ||
+                    defaultValue.toTimeInMillis() > endValue.toTimeInMillis()) {
+                throw new IllegalArgumentException("The default date is out of range");
+            }
             selectedYear = defaultValue.getYear();
             selectedMonth = defaultValue.getMonth();
             selectedDay = defaultValue.getDay();
@@ -215,13 +248,7 @@ public class DateWheelLayout extends BaseWheelLayout {
         if (endValue == null) {
             endValue = DateEntity.yearOnFuture(30);
         }
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setRange(startValue, endValue, defaultValue);
-            }
-        }, 200);
-
+        setRange(startValue, endValue, defaultValue);
     }
 
     public void setDateFormatter(final DateFormatter dateFormatter) {

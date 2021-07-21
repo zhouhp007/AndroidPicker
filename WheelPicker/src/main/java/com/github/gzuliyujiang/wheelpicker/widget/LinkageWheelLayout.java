@@ -105,6 +105,7 @@ public class LinkageWheelLayout extends BaseWheelLayout {
         setIndicatorEnabled(typedArray.getBoolean(R.styleable.LinkageWheelLayout_wheel_indicatorEnabled, false));
         setIndicatorColor(typedArray.getColor(R.styleable.LinkageWheelLayout_wheel_indicatorColor, 0xFFC9C9C9));
         setIndicatorSize(typedArray.getDimension(R.styleable.LinkageWheelLayout_wheel_indicatorSize, 1 * density));
+        setCurvedIndicatorSpace(typedArray.getDimensionPixelSize(R.styleable.LinkageWheelLayout_wheel_curvedIndicatorSpace, (int) (1 * density)));
         setCurtainEnabled(typedArray.getBoolean(R.styleable.LinkageWheelLayout_wheel_curtainEnabled, false));
         setCurtainColor(typedArray.getColor(R.styleable.LinkageWheelLayout_wheel_curtainColor, 0x88FFFFFF));
         setAtmosphericEnabled(typedArray.getBoolean(R.styleable.LinkageWheelLayout_wheel_atmosphericEnabled, false));
@@ -141,6 +142,25 @@ public class LinkageWheelLayout extends BaseWheelLayout {
         if (id == R.id.wheel_picker_linkage_third_wheel) {
             thirdIndex = position;
             selectedCallback();
+        }
+    }
+
+    @Override
+    public void onWheelScrollStateChanged(WheelView view, int state) {
+        int id = view.getId();
+        if (id == R.id.wheel_picker_linkage_first_wheel) {
+            secondWheelView.setEnabled(state == WheelView.SCROLL_STATE_IDLE);
+            thirdWheelView.setEnabled(state == WheelView.SCROLL_STATE_IDLE);
+            return;
+        }
+        if (id == R.id.wheel_picker_linkage_second_wheel) {
+            firstWheelView.setEnabled(state == WheelView.SCROLL_STATE_IDLE);
+            thirdWheelView.setEnabled(state == WheelView.SCROLL_STATE_IDLE);
+            return;
+        }
+        if (id == R.id.wheel_picker_linkage_third_wheel) {
+            firstWheelView.setEnabled(state == WheelView.SCROLL_STATE_IDLE);
+            secondWheelView.setEnabled(state == WheelView.SCROLL_STATE_IDLE);
         }
     }
 

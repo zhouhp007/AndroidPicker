@@ -112,7 +112,7 @@ public abstract class BaseWheelLayout extends LinearLayout implements OnWheelCha
         onAttributeSet(getContext(), a);
         a.recycle();
         requestLayout();
-        postInvalidate();
+        invalidate();
     }
 
     @Override
@@ -165,6 +165,12 @@ public abstract class BaseWheelLayout extends LinearLayout implements OnWheelCha
     public void setCurvedMaxAngle(int curvedMaxAngle) {
         for (WheelView wheelView : wheelViews) {
             wheelView.setCurvedMaxAngle(curvedMaxAngle);
+        }
+    }
+
+    public void setCurvedIndicatorSpace(@Px int space) {
+        for (WheelView wheelView : wheelViews) {
+            wheelView.setCurvedIndicatorSpace(space);
         }
     }
 
